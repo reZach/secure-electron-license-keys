@@ -1,7 +1,46 @@
+import arg from "arg";
 const crypto = require("crypto");
 
-export function cli(args){
+function parseArgumentsIntoOptions(rawArgs) {
+    const args = arg({
+        "--secret": String,
+        "-s": "--secret"
+    });
+    return {
+        secret: args["--secret"] || ""
+    };
+}
 
+export function cli(args) {
+    const options = parseArgumentsIntoOptions(args);
+    
+    
+    console.log(options);
+    const {
+        publicKey,
+        privateKey
+    } = crypto.generateKeyPairSync("rsa", {
+        modulusLength: 4096,
+        publicKeyEncoding: {
+            type: "spki",
+            format: "pem"
+        },
+        privateKeyEncoding: {
+            type: "pkcs8",
+            format: "pem",
+            cipher: "aes-256-cbc",
+            passphrase: ""
+        }
+    });
+
+    let encrypted = crypto.privateEncrypt(privateKey, Buffer.from(JSON.stringify({
+        a: 2
+    })));
+    let decrypted = crypto.publicDecrypt({
+        passphrase: ""   
+    }publicKey, encrypted);
+
+    console.log(decrypted);
 }
 
 // https://www.sohamkamani.com/nodejs/rsa-encryption/
