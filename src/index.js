@@ -12,7 +12,7 @@ const parseVersion = function (version) {
     }
 
     const split = version.split(".");
-    if (split.length === 3){
+    if (split.length === 3) {
         return {
             major: split[0],
             minor: split[1],
@@ -30,15 +30,21 @@ const validate = function (fs, crypto, options) {
     };
 
     // Retrieve public key and license data
-    const publicKey = fs.readFileSync(path.join(options.root, "public.key"));
-    const licenseData = fs.readFileSync(path.join(options.root, "license.data"));
+    const publicKeyPath = path.join(options.root, "public.key");
+    const licenseDataPath = path.join(options.root, "license.data");
 
-    // Attempt to read license data with the public key    
     try {
-        const decrypted = crypto.publicDecrypt(publicKey, licenseData);
+        // Validate files exist
+        if (fs.existsSync(publicKeyPath) && fs.existsSync(licenseDataPath)) {
+            const publicKey = fs.readFileSync(publicKeyPath);
+            const licenseData = fs.readFileSync(licenseDataPath);
 
-        Object.assign(validationResult, JSON.parse(decrypted.toString("utf8")));
-        validationResult.success = true;
+            // Attempt to read license data with the public key
+            const decrypted = crypto.publicDecrypt(publicKey, licenseData);
+
+            Object.assign(validationResult, JSON.parse(decrypted.toString("utf8")));
+            validationResult.success = true;
+        }
     } catch (error) {
         console.error(error);
     }
