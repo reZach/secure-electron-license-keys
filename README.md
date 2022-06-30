@@ -127,6 +127,24 @@ class Component extends React.Component {
     window.api.licenseKeys.onReceive(validateLicenseResponse, function (data) {
       console.log("License response:");
       console.log(data);
+
+      /* Sample 'data'
+
+      {
+        "success": true,
+        "appVersion": {
+          "major": "18",
+          "minor": "0",
+          "patch": "0"
+        },
+        "major": "all",
+        "minor": "all",
+        "patch": "all",
+        "user": "testuser"
+        "expire": "",                        
+      }
+
+      */
     });
   }
 

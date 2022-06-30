@@ -65,7 +65,7 @@ export const preloadBindings = function (ipcRenderer) {
             const validChannels = [validateLicenseResponse];
             if (validChannels.includes(channel)) {
                 // Deliberately strip event as it includes "sender"
-                ipcRenderer.on(channel, (event, args) => func(args));
+                ipcRenderer.on(channel, (_event, args) => func(args));
             }
         },
         clearRendererBindings: () => {
@@ -78,14 +78,14 @@ export const preloadBindings = function (ipcRenderer) {
 // in order to set up the ipc main bindings
 export const mainBindings = function (ipcMain, browserWindow, fs, crypto, options) {
     if (!options) {
-        throw "options must be defined in order for license key validation to work!";
+        throw new Error("options must be defined in order for license key validation to work!");
     } else if (typeof options.root === "undefined") {
-        throw "options must contain a value for 'root'. We suggest 'process.cwd()'.";
+        throw new Error("options must contain a value for 'root'. We suggest 'process.cwd()'.");
     } else if (typeof options.version === "undefined") {
         console.warn("By not passing a 'version' property, the client side code will not be able to make determinations based on this value. We suggest 'app.getVersion()'.");
     }
 
-    ipcMain.on(validateLicenseRequest, (IpcMainEvent, args) => {
+    ipcMain.on(validateLicenseRequest, (_IpcMainEvent, _args) => {
         const result = validate(fs, crypto, options);
 
         browserWindow.webContents.send(validateLicenseResponse, result);
