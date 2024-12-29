@@ -4,7 +4,8 @@
   "description": "Create and implement offline license key verification for your Electron apps.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "npx babel ./src -d ./lib"
+    "build": "npm run genTypes & npx babel ./src -d ./lib",
+    "genTypes": "tsc src/*.js --declaration --allowJs --emitDeclarationOnly --target ES2015 --outDir ./lib"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,8 @@
     "@babel/cli": "^7.18.6",
     "@babel/core": "^7.18.6",
     "@babel/preset-env": "^7.18.6",
-    "babel-preset-minify": "^0.5.2"
+    "babel-preset-minify": "^0.5.2",
+    "typescript": "^5.7.2"
   },
   "dependencies": {
     "arg": "^5.0.2",
